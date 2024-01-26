@@ -12,3 +12,5 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends curl bash
 
 RUN curl -fsSL https://bun.sh/install | bash
+
+RUN pipx install poetry

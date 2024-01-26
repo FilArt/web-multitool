@@ -7,7 +7,10 @@ const routes = [
   },
   {
     path: "/url-shortener",
-    component: import("@/components/UrlShortener.vue"),
+    meta: {
+      title: "URL Shortener",
+    },
+    component: () => import("@/components/UrlShortener.vue"),
   },
 ];
 

@@ -9,7 +9,12 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn type="submit">Generate short URL</v-btn>
+      <v-btn color="info" block type="submit">
+        <span>
+        Generate short URL
+        </span>
+        <v-icon end>mdi-magic-staff</v-icon>
+      </v-btn>
     </v-card-actions>
   </v-form>
   </v-card>

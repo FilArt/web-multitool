@@ -9,7 +9,8 @@
 		"vscode": {
 			"extensions": [
 				"Vue.volar",
-				"rvest.vs-code-prettier-eslint"
+				"rvest.vs-code-prettier-eslint",
+				"charliermarsh.ruff"
 			]
 		}
 	}
