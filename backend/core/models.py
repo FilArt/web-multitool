@@ -1,30 +1,33 @@
+from fastapi import FastAPI
+from tortoise import Tortoise, connections, fields, models
+from tortoise.log import logger
 
-import databases
-import ormar
-import sqlalchemy
-
-DATABASE_URL = "sqlite:///db.sqlite"
-database = databases.Database(DATABASE_URL)
-metadata = sqlalchemy.MetaData()
-
-# note that this step is optional -> all ormar cares is a internal
-# class with name Meta and proper parameters, but this way you do not
-# have to repeat the same parameters if you use only one database
-class BaseMeta(ormar.ModelMeta):
-    metadata = metadata
-    database = database
+from .settings import Settings
 
 
-class ShortURL(ormar.Model):
-    class Meta(BaseMeta):
-        tablename = "short_urls"
+class ShortenedLinks(models.Model):
+    id = fields.IntField(pk=True, auto=True)
+    original_url = fields.TextField()
+    shortened_url = fields.TextField()
+    created_at = fields.DatetimeField(auto_now_add=True)
+    click_count = fields.IntField(default=0)
 
-    value = ormar.Text(primary_key=True)
+    def get_full_path(self):
+        return f"/s/{self.shortened_url}"
 
 
-class LongURL(ormar.Model):
-    class Meta(BaseMeta):
-        tablename = "long_urls"
+async def init_db(app: FastAPI):
+    settings = Settings()
+    logger.info(
+        "Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps
+    )
+    await Tortoise.init(
+        db_url=settings.db_url,
+        modules={"models": ["core.models"]},
+    )
+    await Tortoise.generate_schemas()
 
-    value = ormar.Text(primary_key=True)
-    short = ormar.ForeignKey(to=ShortURL)
+
+async def close_db():
+    await connections.close_all()
+    logger.info("Tortoise-ORM shutdown")
